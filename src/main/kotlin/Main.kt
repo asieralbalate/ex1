@@ -7,18 +7,33 @@ import java.io.InputStreamReader
 fun main(args: Array<String>) {
     var f = File.listRoots()[0]
     println(llistaDirectori(f))
-    println("Introdueix un numero (-1 per acabar): ")
-    val ent = BufferedReader(InputStreamReader(System.`in`)).readLine()
-    val numero = ent.toInt()
-    if (numero > -1 || numero <= f.length() + 1){
-        f = File.listRoots()[numero - 1]
-        if (f.isDirectory) {
-            println(llistaDirectori(f))
-        } else
-            // Aqui quiero acabar si no es directorio, que se quede igual el programa
+    var noAcaba = true
+    var currentFile: File
+    while (noAcaba) {
+        println("Introdueix un numero (-1 per acabar): ")
+        var entrada = BufferedReader(InputStreamReader(System.`in`)).readLine()
+        var numero = entrada.toInt()
+        if (numero == -1) {
             System.exit(0)
-    } else if (numero == -1) {
-        System.exit(0)
+        } else if (numero > f.listFiles().size || numero < -1) {
+            println("Numero incorrecte")
+        } else {
+            if (numero == 0) {
+                if (f.parentFile.exists() == null) {
+                    println(llistaDirectori(f))
+                }
+            } else {
+                currentFile = f.listFiles().sorted()[numero - 1]
+                f = currentFile
+                if (currentFile.isDirectory) {
+                    if (currentFile.canRead()) {
+                        println(llistaDirectori(currentFile))
+                    } else {
+                        println("No tens permisos")
+                    }
+                }
+            }
+        }
     }
 }
 
